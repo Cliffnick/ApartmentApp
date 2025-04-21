@@ -9,7 +9,5 @@ class Listing(db.Model):
     bedrooms = db.Column(db.Integer, nullable=False)
     bathrooms = db.Column(db.Integer, nullable=False)
     landlord_id = db.Column(db.Integer, db.ForeignKey('landlords.id'), nullable=False)
-
-    
     location = db.relationship('Location', backref='listing', uselist=False, lazy=True)
 

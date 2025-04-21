@@ -13,7 +13,8 @@ from App.controllers import (
     login,
     create_landlord, 
     create_tenant,   
-    create_user       
+    create_user
+          
 )
 
 auth_views = Blueprint('auth_views', __name__, template_folder='../templates')
@@ -131,6 +132,34 @@ def search_page():
     results = user.search_listings(search_term)
     return render_template('search.html', user=user, results=results)
 
+@auth_views.route('/addproperty',methods=['POST'])
+@jwt_required(Landlord)
+def addproperty():
+    flash("added!")
+    landlord = Landlord.query.get(current_user.id)
+    data=request.form
+    for key, value in data.items():
+        print(f"{key}: {value}")
+
+    apartment = current_user.create_listing(
+        title=data['propertyTitle'],
+        description=data['description'],
+        price=data['price'],
+        bedrooms=data['Bedrooms'],
+        bathrooms=data['Bathrooms'],
+        street=data['address'],
+        city=data['city'],
+        state=data['state'],
+        zip_code=data['zipCode']
+    )
+
+    return render_template(
+        'myproperties.html',
+        is_authenticated=True,
+        is_landlord=True,
+        current_user=landlord,
+        properties=landlord.listings  # Access the listings relationship
+    )
 '''
 API Routes
 '''
